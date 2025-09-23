@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="search.html">Search Lectures</a>
+            <a href="tutor.html">Become a Tutor</a>
+            <a href="books.html">Books</a>
+            <a href="sessions.html">Sessions</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </nav>
+        <h2>Welcome, <span id="username"></span>!</h2>
+        <section>
+            <h3>Your Profile</h3>
+            <p><strong>Your User ID:</strong> <span id="userId"></span> (Share this with tutors/students)</p>
+            <p><strong>Your Credits:</strong> <span id="userCredits"></span></p>
+        </section>
+    </div>
+<script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) { window.location.href = "index.html"; }
+    function logout() {
+        localStorage.removeItem("user");
+        window.location.href = "index.html";
+    }
+    document.getElementById("username").innerText = user.name;
+    document.getElementById("userId").innerText = user.id;
+    document.getElementById("userCredits").innerText = user.credits;
+</script>
+</body>
+</html>

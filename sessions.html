@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Session</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="search.html">Search Lectures</a>
+            <a href="tutor.html">Become a Tutor</a>
+            <a href="books.html">Books</a>
+            <a href="sessions.html">Sessions</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </nav>
+        <h2>Teaching Sessions</h2>
+        <section>
+            <h3>Create a New Session</h3>
+            <p style="text-align: center;">Complete a session as a tutor to earn credits. Enter the student's details below.</p>
+            <input type="number" id="studentId" placeholder="Student's User ID">
+            <input id="sessionSubject" placeholder="Subject Taught">
+            <input type="number" id="sessionCredits" placeholder="Credits Transferred">
+            <input id="zoomLink" placeholder="Meeting Link">
+            <button onclick="createSession()">Create Session & Transfer Credits</button>
+            <pre id="sessionResult"></pre>
+        </section>
+    </div>
+<script>
+    const API_BASE_URL = "http://localhost:5000";
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) { window.location.href = "index.html"; }
+    function logout() { localStorage.removeItem("user"); window.location.href = "index.html"; }
+
+    async function createSession() {
+        const student_id = document.getElementById("studentId").value;
+        const credits = parseInt(document.getElementById("sessionCredits").value);
+        if (!student_id || !credits) {
+            alert("Student ID and Credits are required.");
+            return;
+        }
+        const response = await fetch(`${API_BASE_URL}/sessions`, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                tutor_id: user.id, // The logged-in user is the tutor
+                student_id: student_id,
+                subject: document.getElementById("sessionSubject").value,
+                credits: credits,
+                zoom_link: document.getElementById("zoomLink").value
+            })
+        });
+        const data = await response.json();
+        document.getElementById("sessionResult").innerText = JSON.stringify(data, null, 2);
+        if(response.ok) {
+            alert('Session created! Credits have been transferred.');
+        } else {
+            alert(`Error: ${data.error}`);
+        }
+    }
+</script>
+</body>
+</html>

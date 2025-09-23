@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Offer a Lecture</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="search.html">Search Lectures</a>
+            <a href="tutor.html">Become a Tutor</a>
+            <a href="books.html">Books</a>
+            <a href="sessions.html">Sessions</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </nav>
+        <h2>Offer a Lecture</h2>
+        <section>
+            <h3>Post Your Availability</h3>
+            <p style="text-align: center;">Fill out the form below to list a lecture you can teach. Other students will be able to find it in the search.</p>
+            <input id="subject" placeholder="Subject (e.g., JavaScript, Physics)">
+            <input id="description" placeholder="Brief Description (e.g., Intro to web development)">
+            <input type="number" id="credits_cost" placeholder="Credit Cost for your lecture">
+            <button onclick="postListing()">Post Lecture Listing</button>
+            <pre id="postResult"></pre>
+        </section>
+    </div>
+<script>
+    const API_BASE_URL = "http://localhost:5000";
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) { window.location.href = "index.html"; }
+    function logout() { localStorage.removeItem("user"); window.location.href = "index.html"; }
+
+    async function postListing() {
+        const subject = document.getElementById("subject").value;
+        const description = document.getElementById("description").value;
+        const credits_cost = parseInt(document.getElementById("credits_cost").value);
+
+        if (!subject || !credits_cost) {
+            alert("Subject and Credit Cost are required.");
+            return;
+        }
+
+        const response = await fetch(`${API_BASE_URL}/listings`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                tutor_id: user.id, // The logged-in user is the tutor
+                subject,
+                description,
+                credits_cost
+            })
+        });
+        const data = await response.json();
+        document.getElementById("postResult").innerText = JSON.stringify(data, null, 2);
+        if (response.ok) {
+            alert('Your lecture has been listed successfully!');
+        } else {
+            alert(`Error: ${data.error}`);
+        }
+    }
+</script>
+</body>
+</html>

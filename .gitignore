@@ -1,0 +1,8 @@
+# Ignore the huge folder of dependencies
+node_modules
+
+# Ignore the database file (contains user data)
+vinhack.db
+
+# Ignore any environment variables file
+.env

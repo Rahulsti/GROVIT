@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to VINHACK</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Peer-to-Peer Learning</h1>
+        <section>
+            <h2>Login</h2>
+            <input id="loginEmail" type="email" placeholder="Email">
+            <input id="loginPassword" type="password" placeholder="Password">
+            <button onclick="handleLogin()">Login</button>
+        </section>
+        <section>
+            <h2>Register</h2>
+            <input id="regName" type="text" placeholder="Name">
+            <input id="regEmail" type="email" placeholder="Email">
+            <input id="regPassword" type="password" placeholder="Password">
+            <button onclick="handleRegister()">Register</button>
+        </section>
+    </div>
+<script>
+    const API_BASE_URL = "http://localhost:5000";
+
+    async function handleLogin() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const response = await fetch(`${API_BASE_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            localStorage.setItem('user', JSON.stringify(data));
+            window.location.href = 'dashboard.html';
+        } else {
+            alert(data.error);
+        }
+    }
+
+    async function handleRegister() {
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const response = await fetch(`${API_BASE_URL}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            alert('Registration successful! Please log in.');
+        } else {
+            alert(data.error);
+        }
+    }
+</script>
+</body>
+</html>
